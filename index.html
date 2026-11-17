@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#07111f">
+  <title>Linha Dourada — Manda Busca 2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #07111f;
+      color: #fff;
+      min-height: 100vh;
+      line-height: 1.45;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .top {
+      background: #00c853;
+      color: #003d1a;
+      text-align: center;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .wrap {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      text-align: center;
+    }
+
+    .check-big {
+      width: 52px;
+      height: 52px;
+      background: #00c853;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 12px;
+      color: #fff;
+    }
+
+    .congrats {
+      font-size: 14px;
+      color: #00e676;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .title span { color: #ffd700; }
+
+    .sub {
+      font-size: 14px;
+      color: #a8c5d8;
+      margin-bottom: 16px;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* VIDEO VERTICAL + PLAY BUTTON */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto 18px;
+      aspect-ratio: 9 / 16;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 215, 0, 0.35);
+      box-shadow: 0 0 24px rgba(255, 215, 0, 0.18);
+      background: #000;
+    }
+    .video-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      z-index: 1;
+    }
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.25s ease;
+    }
+    .play-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .play-btn {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(180deg, #ffd700 0%, #e6c200 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+      transition: transform 0.15s ease;
+    }
+    .play-btn:active { transform: scale(0.92); }
+    .play-btn svg {
+      width: 28px;
+      height: 28px;
+      margin-left: 4px;
+      fill: #1a1500;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255, 215, 0, 0.35);
+      border-radius: 14px;
+      padding: 16px 14px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .box h3 {
+      font-size: 14px;
+      color: #ffd700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .box ul { list-style: none; }
+    .box li {
+      font-size: 13.5px;
+      color: #d0e4f0;
+      padding: 6px 0;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .box li:last-child { border-bottom: none; }
+    .box li::before {
+      content: "✓";
+      color: #ffd700;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .price-block { margin: 6px 0 16px; }
+    .price-old {
+      font-size: 14px;
+      color: #8fb8d0;
+      text-decoration: line-through;
+    }
+    .price-new {
+      font-size: 34px;
+      font-weight: 800;
+      color: #ffd700;
+      line-height: 1.1;
+    }
+    .price-note {
+      font-size: 12px;
+      color: #7eb8d4;
+      margin-top: 4px;
+    }
+
+    .cta {
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, #ffd700 0%, #e6c200 100%);
+      color: #1a1500;
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    .cta:active { transform: scale(0.97); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 20px rgba(255, 215, 0, 0.35); }
+      50% { box-shadow: 0 6px 28px rgba(255, 215, 0, 0.55); }
+    }
+
+    .decline {
+      background: none;
+      border: none;
+      color: #7eb8d4;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 8px;
+      display: block;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .secure {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #6a9bb5;
+    }
+
+    /* DOWNSELL POPUP */
+    .down-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .down-overlay.show { display: flex; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .down-box {
+      background: linear-gradient(180deg, #0c1c33 0%, #07111f 100%);
+      border: 2px solid #ffd700;
+      border-radius: 16px;
+      max-width: 360px;
+      width: 100%;
+      padding: 22px 18px 20px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.88); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .down-badge {
+      display: inline-block;
+      background: #ff3b3b;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 50px;
+      margin-bottom: 10px;
+      letter-spacing: 0.4px;
+    }
+    .down-title {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+    .down-title span { color: #ffd700; }
+    .down-desc {
+      font-size: 13.5px;
+      color: #a8c5d8;
+      margin-bottom: 12px;
+    }
+    .down-price {
+      font-size: 30px;
+      font-weight: 800;
+      color: #ffd700;
+      margin-bottom: 4px;
+    }
+    .down-price small {
+      font-size: 14px;
+      color: #8fb8d0;
+      text-decoration: line-through;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+    .down-cta {
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, #ffd700 0%, #e6c200 100%);
+      color: #1a1500;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0 10px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 18px rgba(255, 215, 0, 0.35);
+    }
+    .down-no {
+      background: none;
+      border: none;
+      color: #7eb8d4;
+      font-size: 12.5px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top">
+    ✓ Compra confirmada com sucesso
+  </div>
+
+  <div class="wrap">
+
+    <div class="check-big">✓</div>
+    <p class="congrats">Parabéns pela sua compra!</p>
+
+    <h1 class="title">
+      Libere agora a<br>
+      <span>Linha Dourada</span>
+    </h1>
+
+    <p class="sub">
+      A linha mais forte do jogo. Corte mais fácil, dure mais e domine os x1.
+    </p>
+
+    <!-- VSL VERTICAL COM PLAY -->
+    <div class="video-wrap" id="videoWrap">
+      <iframe 
+        id="vimeoPlayer"
+        src="https://player.vimeo.com/video/1247679581?autoplay=0&title=0&byline=0&portrait=0" 
+        allow="autoplay; fullscreen; picture-in-picture" 
+        allowfullscreen
+        title="Linha Dourada - Manda Busca">
+      </iframe>
+      <div class="play-overlay" id="playOverlay">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>O que a Linha Dourada libera:</h3>
+      <ul>
+        <li>Linha com máxima resistência e corte</li>
+        <li>Maior chance de vencer nos x1</li>
+        <li>Efeito visual exclusivo no céu</li>
+        <li>Vantagem real nas disputas online</li>
+        <li>Compatível com todas as pipas</li>
+        <li>Acesso permanente (não expira)</li>
+      </ul>
+    </div>
+
+    <div class="price-block">
+      <div class="price-old">De R$ 19,90</div>
+      <div class="price-new">R$ 7,90</div>
+      <div class="price-note">Só quem acabou de comprar tem essa condição</div>
+    </div>
+
+    <a href="https://pay.wiapy.com/iwwzoZg4Eko9" class="cta" id="cta-upsell">
+      🔥 QUERO A LINHA DOURADA
+    </a>
+
+    <button class="decline" id="btn-decline">
+      Não, quero continuar só com a linha normal
+    </button>
+
+    <p class="secure">
+      Pagamento 100% seguro • Liberação imediata no jogo
+    </p>
+
+  </div>
+
+  <!-- DOWNSELL POPUP -->
+  <div class="down-overlay" id="downPopup">
+    <div class="down-box">
+      <div class="down-badge">⚠️ ÚLTIMA CHANCE</div>
+      <h2 class="down-title">Leva a <span>Linha Dourada</span><br>por apenas:</h2>
+      <div class="down-price">
+        <small>R$ 7,90</small>R$ 4,00
+      </div>
+      <p class="down-desc">Mesma linha. Preço mínimo só agora.</p>
+      <a href="https://pay.wiapy.com/ir-h_1XP8uT" class="down-cta" id="downCta">
+        🔥 QUERO POR R$ 4,00
+      </a>
+      <button class="down-no" id="downNo">Não, quero continuar sem a Linha Dourada</button>
+    </div>
+  </div>
+
+  <script>
+    function withParams(url) {
+      try {
+        var u = new URL(url);
+        new URLSearchParams(window.location.search).forEach(function (v, k) {
+          if (!u.searchParams.has(k)) u.searchParams.set(k, v);
+        });
+        return u.toString();
+      } catch (err) { return url; }
+    }
+
+    // Play button - reload iframe with autoplay
+    document.getElementById('playOverlay').addEventListener('click', function() {
+      var iframe = document.getElementById('vimeoPlayer');
+      iframe.src = "https://player.vimeo.com/video/1247679581?autoplay=1&title=0&byline=0&portrait=0";
+      this.classList.add('hidden');
+    });
+
+    // Upsell CTA
+    document.getElementById('cta-upsell').href = withParams("https://pay.wiapy.com/iwwzoZg4Eko9");
+
+    // Downsell CTA
+    document.getElementById('downCta').href = withParams("https://pay.wiapy.com/ir-h_1XP8uT");
+
+    // Decline -> show downsell popup
+    document.getElementById('btn-decline').addEventListener('click', function() {
+      document.getElementById('downPopup').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Final decline
+    document.getElementById('downNo').addEventListener('click', function() {
+      document.getElementById('downPopup').classList.remove('show');
+      document.body.style.overflow = '';
+    });
+  </script>
+</body>
+</html>
