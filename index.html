@@ -337,9 +337,10 @@
     <div class="video-wrap" id="videoWrap">
       <iframe 
         id="vimeoPlayer"
-        src="https://player.vimeo.com/video/1247679581?autoplay=0&title=0&byline=0&portrait=0" 
-        allow="autoplay; fullscreen; picture-in-picture" 
+        src="https://player.vimeo.com/video/1247679581?autoplay=0&title=0&byline=0&portrait=0&playsinline=1&muted=0" 
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         allowfullscreen
+        playsinline
         title="Linha Dourada - Manda Busca">
       </iframe>
       <div class="play-overlay" id="playOverlay">
@@ -397,6 +398,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@vimeo/player@2.22.0/dist/player.min.js"></script>
   <script>
     function withParams(url) {
       try {
@@ -408,11 +410,34 @@
       } catch (err) { return url; }
     }
 
-    // Play button - reload iframe with autoplay
+    // Força o som no celular
+    function forceUnmute(player) {
+      if (!player) return;
+      player.setMuted(false).catch(function(){});
+      player.setVolume(1).catch(function(){});
+      setTimeout(function(){ player.setMuted(false).catch(function(){}); }, 300);
+      setTimeout(function(){ player.setMuted(false).catch(function(){}); }, 800);
+    }
+
+    // Play button
     document.getElementById('playOverlay').addEventListener('click', function() {
       var iframe = document.getElementById('vimeoPlayer');
-      iframe.src = "https://player.vimeo.com/video/1247679581?autoplay=1&title=0&byline=0&portrait=0";
-      this.classList.add('hidden');
+      var overlay = this;
+
+      // Atualiza a URL com autoplay + som liberado
+      iframe.src = "https://player.vimeo.com/video/1247679581?autoplay=1&title=0&byline=0&portrait=0&playsinline=1&muted=0";
+      overlay.classList.add('hidden');
+
+      // Tenta desmutar com a API do Vimeo
+      setTimeout(function() {
+        try {
+          if (window.Vimeo) {
+            var player = new Vimeo.Player(iframe);
+            forceUnmute(player);
+            player.play().catch(function(){});
+          }
+        } catch (e) {}
+      }, 500);
     });
 
     // Upsell CTA
